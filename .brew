@@ -36,13 +36,14 @@ brew install php54
 brew install ack
 #brew install exiv2
 brew install git
-#brew install imagemagick
+brew install imagemagick
 brew install lynx
 brew install node
 brew install rename
 brew install rhino
 brew install tree
 brew install webkit2png
+brew install z
 
 # Remove outdated versions from the cellar
 brew cleanup
