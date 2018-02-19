@@ -29,6 +29,9 @@
 	branches = branch -a
 	remotes = remote -v
 
+	# List aliases
+	aliases = config --get-regexp alias
+
 	# Amend the currently staged files to the latest commit
 	amend = commit --amend --reuse-message=HEAD
 
@@ -60,21 +63,47 @@
 	# List contributors with number of commits
 	contributors = shortlog --summary --numbered
 
-	# Merge GitHub pull request on top of the current branch or,
-	# if a branch name is specified, on top of the specified branch
-	mpr = "!f() { \
-		declare currentBranch=\"$(git symbolic-ref --short HEAD)\"; \
-		declare branch=\"${2:-$currentBranch}\"; \
-		if [ $(printf \"%s\" \"$1\" | grep '^[0-9]\\+$' > /dev/null; printf $?) -eq 0 ]; then \
-			git fetch origin refs/pull/$1/head:pr/$1 && \
-			git checkout -B $branch && \
-			git rebase $branch pr/$1 && \
-			git checkout -B $branch && \
-			git merge pr/$1 && \
-			git branch -D pr/$1 && \
-			git commit --amend -m \"$(git log -1 --pretty=%B)\n\nCloses #$1.\"; \
-		fi \
-	}; f"
+  # jakemhiller/dotfiles additions
+
+  # Save a stash with a name reference
+  ss = stash save
+
+  # Add empty commit to link (jira) issue
+	link-issue = "!f() { git commit --allow-empty -m \"Fixes issue #$1\"; }; f"
+
+  # Extra explicit branch deletion aliases
+  delete-local-branch = branch -D
+  # Delete all merged branches
+  list-merged-branches = "!git branch --merged master"
+  delete-merged-branches = "!git dm"
+  # jh- initial prefixed branches
+  list-merged-jh-branches = "!git branch --list 'jh-*' --merged master"
+  delete-merged-jh-branches = "!git list-merged-jh-branches | xargs git delete-branch"
+  delete-local-jhtest-branches = "!git branch --list 'jhtest-*' --merged master | xargs git delete-branch"
+
+  # checkout variants
+  co  = checkout
+  cob = checkout -b
+  # previous branch
+  cop = checkout -
+  coo = checkout origin/master
+  com = checkout master
+
+  # v useful github flow aliases http://haacked.com/archive/2014/07/28/github-flow-aliases/
+  cm = !git add -A && git commit -m
+  save = !git add -A && git commit -m 'SAVEPOINT'
+  wip = !git add -u && git commit -m "WIP"
+  undo = reset HEAD~1 --mixed
+
+  # List recent branches
+  br = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+
+  # Set upstream
+  sup = "!l() { git branch --set-upstream-to origin/$(git rev-parse --abbrev-ref HEAD); }; l"
+
+[apply]
+  # Detect whitespace errors when applying a patch
+  whitespace = fix
 
 [core]
 
@@ -87,13 +116,17 @@
 	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
-	# Make `git rebase` safer on OS X
+	# Make `git rebase` safer on macOS
 	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
 	trustctime = false
 
 	# Prevent showing files whose names contain non-ASCII symbols as unversioned.
 	# http://michael-kuehnel.de/git/2014/11/21/git-mac-osx-and-german-umlaute.html
 	precomposeunicode = false
+
+	# Speed up commands involving untracked files such as `git status`.
+	# https://git-scm.com/docs/git-update-index#_untracked_cache
+	untrackedCache = true
 
 [color]
 
@@ -120,12 +153,18 @@
 	changed = green
 	untracked = cyan
 
+[commit]
+
+	# https://help.github.com/articles/signing-commits-using-gpg/
+	gpgsign = true
+
 [diff]
 
 	# Detect copies as well as renames
 	renames = copies
 
 [diff "bin"]
+
 	# Use `hexdump` to diff binary files
 	textconv = hexdump -v -C
 
@@ -147,6 +186,9 @@
 	default = current
 	# Make `git push` push relevant annotated tags when pushing branches out.
 	followTags = true
+
+[credential]
+  helper = osxkeychain
 
 # URL shorthands
 
