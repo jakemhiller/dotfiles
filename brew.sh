@@ -91,7 +91,7 @@ brew install ssh-copy-id
 brew install tree
 brew install vbindiff
 brew install zopfli
-brew install nvm
+brew install hub
 brew install z
 
 # Remove outdated versions from the cellar.

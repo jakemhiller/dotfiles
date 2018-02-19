@@ -45,3 +45,9 @@ fi;
 # Add tab completion for `defaults read|write NSGlobalDomain`
 # You could just use `-g` instead, but I like being explicit
 complete -W "NSGlobalDomain" defaults;
+
+# jakemhiller/dotfiles additions
+
+### MacOS Sierra doesn't do this automatically
+### Needed for remote deploys
+ssh-add -A 2>/dev/null;

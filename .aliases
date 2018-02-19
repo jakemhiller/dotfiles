@@ -149,3 +149,21 @@ alias reload="exec ${SHELL} -l"
 
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
+
+# jakemhiller/dotfiles additions
+
+# alias subl to atom b/c of muscle memory
+alias subl='atom'
+
+# open .extra file
+alias extra='atom ~/.extra'
+
+# alias git to the hub package
+alias git='hub'
+
+# open gitconfig
+alias gconf='subl ~/.gitconfig'
+
+alias sites='cd ~/Sites/'
+
+alias hosts='subl /etc/hosts'
