@@ -98,6 +98,11 @@
   # List recent branches
   br = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
 
+  # Merge Helpers
+  m = merge --no-ff
+  mo = "!r() { git m origin/$1; }; r"
+  mm = mo master
+
   # Set upstream
   sup = "!l() { git branch --set-upstream-to origin/$(git rev-parse --abbrev-ref HEAD); }; l"
 
@@ -152,11 +157,6 @@
 	added = yellow
 	changed = green
 	untracked = cyan
-
-[commit]
-
-	# https://help.github.com/articles/signing-commits-using-gpg/
-	gpgsign = true
 
 [diff]
 
